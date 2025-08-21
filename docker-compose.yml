@@ -1,0 +1,111 @@
+version: "3.8"
+services:
+  api:
+    build: ./backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg2://postgres:postgres@postgres:5432/workflows
+      REDIS_URL: redis://redis:6379/0
+    ports:
+      - "8000:8000"
+    command: >
+      sh -c "
+      until pg_isready -h postgres -U postgres;
+      do echo 'Waiting for Postgres...'; sleep 2; done;
+      uvicorn app.main:app --host 0.0.0.0 --port 8000
+      "
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: workflows
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      retries: 5
+  # postgres:
+  #   image: postgres:15
+  #   environment:
+  #     POSTGRES_PASSWORD: postgres
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_DB: workflows
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - pgdata:/var/lib/postgresql/data
+  # postgres:
+  #   image: postgres:15
+  #   environment:
+  #     POSTGRES_PASSWORD: postgres
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_DB: workflows
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - pgdata:/var/lib/postgresql/data
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U postgres"]
+  #     interval: 5s
+  #     retries: 5
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  # api:
+  #   build: ./backend
+  #   env_file: ./backend/.env.example
+  #   ports:
+  #     - "8000:8000"
+  #   volumes:
+  #     - ./backend/app:/app/app
+  #   depends_on:
+  #     - postgres
+  #     - redis
+
+  # api:
+  #   build: .
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   environment:
+  #     DATABASE_URL: postgresql+psycopg2://postgres:postgres@postgres:5432/workflows
+  #   command: >
+  #     sh -c "
+  #     until pg_isready -h postgres -U postgres;
+  #     do echo 'Waiting for Postgres...'; sleep 2; done;
+  #     uvicorn app.main:app --host 0.0.0.0 --port 8000
+  #     "
+  worker:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql+psycopg2://postgres:postgres@postgres:5432/workflows
+      REDIS_URL: redis://redis:6379/0
+    command: ["celery", "-A", "app.engine.orchestrator.celery_app", "worker", "-l", "info"]
+    volumes:
+      - ./backend/app:/app/app
+    depends_on:
+      - api
+      - redis
+      - postgres
+
+  web:
+    build: ./frontend
+    environment:
+      VITE_API_URL: http://api:8000
+    ports:
+      - "5173:5173"
+    depends_on:
+      - api
+
+volumes:
+  pgdata: {}

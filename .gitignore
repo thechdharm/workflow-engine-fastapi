@@ -1,0 +1,75 @@
+# General
+.DS_Store
+*.log
+*.tmp
+*.swp
+*.swo
+*.orig
+
+# Editors/IDEs
+.vscode/
+.idea/
+*.code-workspace
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.mypy_cache/
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.cache/
+
+# Virtual envs
+.venv/
+venv/
+ENV/
+env/
+
+# Env files
+.env
+.env.*
+backend/.env
+backend/.env.*
+frontend/.env
+frontend/.env.*
+
+# FastAPI / Uvicorn
+uvicorn.log
+
+# Alembic (keep migrations tracked; ignore local artifacts)
+migrations/versions/__pycache__/
+
+# Node / Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+node_modules/
+dist/
+build/
+
+# TypeScript / JS caches
+*.tsbuildinfo
+.tsbuildinfo
+.eslintcache
+.nyc_output/
+coverage/
+
+# Vite / Local
+*.local
+
+# Docker
+.docker/
+docker-compose.override.yml
+*.pid
+
+# macOS
+.AppleDouble
+.LSOverride
+Icon?
+.Spotlight-V100
+.Trashes
