@@ -1,16 +1,292 @@
-:root { color-scheme: light dark; }
-body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"; }
-.app-shell header { padding: 8px 12px; border-bottom: 1px solid #e5e7eb; }
-.app-shell nav { display: flex; gap: 12px; align-items: center; }
-.app-shell main { padding: 12px; }
-.toolbar { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
-.grid { display: grid; grid-template-columns: 1fr 360px; gap: 12px; height: calc(100vh - 80px); }
-.panel { border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px; background: #fff; overflow: auto; }
-.row { display: flex; gap: 8px; align-items: center; }
-input, textarea, select, button { padding: 6px 8px; border: 1px solid #d1d5db; border-radius: 6px; background: #fff; color: inherit; }
-button.primary { background: #2563eb; color: #fff; border-color: #2563eb; }
-table { width: 100%; border-collapse: collapse; }
-th, td { border-bottom: 1px solid #e5e7eb; padding: 8px; text-align: left; }
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; }
+
+.grid { display: grid; grid-template-columns: 1fr 350px; height: 100vh; }
+.panel { padding: 16px; border-right: 1px solid #e5e7eb; }
+.panel:last-child { border-right: none; border-left: 1px solid #e5e7eb; }
+
+.toolbar { display: flex; gap: 8px; align-items: center; margin-bottom: 16px; padding: 12px; background: #f9fafb; border-radius: 8px; }
+.toolbar input { flex: 1; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; }
+.toolbar button { padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; transition: all 0.2s; }
+.toolbar button.primary { background: #3b82f6; color: white; }
+.toolbar button.primary:hover:not(:disabled) { background: #2563eb; }
+.toolbar button.primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
 .tag { font-size: 12px; padding: 2px 6px; border: 1px solid #ddd; border-radius: 999px; }
+.tag.saved { background: #dcfce7; color: #166534; border-color: #bbf7d0; }
+.tag.unsaved { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+
 .flow { height: calc(100vh - 160px); background: #f8fafc; border-radius: 8px; }
+
+/* Node Palette Styles */
+.node-palette {
+  margin-bottom: 24px;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.node-palette h3 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.node-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.palette-node {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: grab;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.palette-node:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.palette-node:active {
+  cursor: grabbing;
+  transform: translateY(0);
+}
+
+.node-icon {
+  font-size: 20px;
+  width: 24px;
+  text-align: center;
+}
+
+.node-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
+
+/* Custom Node Styles */
+.node {
+  padding: 12px;
+  border-radius: 8px;
+  border: 2px solid;
+  min-width: 120px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: white;
+}
+
+.node-header {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.node-content {
+  font-size: 11px;
+  opacity: 0.8;
+  font-family: monospace;
+}
+
+.start-node {
+  border-color: #10b981;
+  background: #ecfdf5;
+}
+
+.notification-node {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.delay-node {
+  border-color: #f59e0b;
+  background: #fffbeb;
+}
+
+.http-node {
+  border-color: #8b5cf6;
+  background: #f5f3ff;
+}
+
+.branch-node {
+  border-color: #ef4444;
+  background: #fef2f2;
+}
+
+/* Trigger Section */
+.trigger-section {
+  margin-bottom: 24px;
+}
+
+.trigger-section h3 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.trigger-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-family: monospace;
+  font-size: 12px;
+  resize: vertical;
+  background: white;
+}
+
+.trigger-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.example-text {
+  font-size: 11px;
+  color: #6b7280;
+  margin: 8px 0 0 0;
+  font-family: monospace;
+  background: #f3f4f6;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+/* Tips Section */
+.tips-section {
+  padding: 16px;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 8px;
+}
+
+.tips-section h3 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #0c4a6e;
+}
+
+.tips-section ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.tips-section li {
+  font-size: 13px;
+  color: #0c4a6e;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+/* Workflow Name Input */
+.workflow-name {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* ReactFlow Customization */
+.react-flow__node {
+  cursor: pointer;
+}
+
+.react-flow__node:hover {
+  filter: brightness(1.05);
+}
+
+.react-flow__edge-path {
+  stroke: #6b7280;
+  stroke-width: 2;
+}
+
+.react-flow__edge:hover .react-flow__edge-path {
+  stroke: #3b82f6;
+  stroke-width: 3;
+}
+
+.react-flow__controls {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.react-flow__minimap {
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Connection Handles */
+.react-flow__handle {
+  width: 12px;
+  height: 12px;
+  background: #3b82f6;
+  border: 2px solid white;
+  border-radius: 50%;
+  cursor: crosshair;
+  transition: all 0.2s;
+}
+
+.react-flow__handle:hover {
+  background: #2563eb;
+  transform: scale(1.2);
+}
+
+.react-flow__handle--source {
+  background: #10b981;
+}
+
+.react-flow__handle--source:hover {
+  background: #059669;
+}
+
+.react-flow__handle--target {
+  background: #f59e0b;
+}
+
+.react-flow__handle--target:hover {
+  background: #d97706;
+}
+
+/* Connection Lines */
+.react-flow__connection-line {
+  stroke: #3b82f6;
+  stroke-width: 2;
+}
+
+.react-flow__connection-line:hover {
+  stroke: #2563eb;
+  stroke-width: 3;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto;
+  }
+  
+  .panel:last-child {
+    border-left: none;
+    border-top: 1px solid #e5e7eb;
+  }
+  
+  .flow {
+    height: 60vh;
+  }
+}
 
